@@ -90,13 +90,13 @@
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
@@ -725,6 +725,10 @@
 	
 	<action-attrs name="action-partner-attrs-set-default">
 	  <attribute name="value:add" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()" for="companySet"/>
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-domain">
+		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
 	</action-attrs>
 
 	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">

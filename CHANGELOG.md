@@ -2,11 +2,20 @@
 ## [Unreleased 5.0.4]
 ## Features
 - User : Add a search filter to see the active users.
+- Add support for multiple demo data config per app. 
+- Configurator creator : Add demo data.
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
+- Stock rules: new message template in demo data.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Stock location tree: add missing french translation.
+- Improved model studio by removing not required properties from different elements.
+- Move lines: set automatically currency rate and amount in manual move lines.
+- Stock location line: add the dotted field 'product.unit'.
+- Stock move: make lines fully editable and removable on planned status.
+- Harmonization of Sale order line, purchase order line and invoice line form views.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -23,6 +32,28 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
+- Production : Change menu title in french version from 'Ordres de Production' to 'Ordres de production'. 
+- CANCEL REASON : put field "Name" manadatory.
+- Studio: Fix datetime comparison for chart parameter.
+- Cost price in manufacturing order: fix quantity in produced cost sheet line.
+- Fix product last production price computation from manufacturing order.
+- Configurator creator : Fix changes in import and export.
+- Cost sheet group : Put field 'name' mandatory.
+- Fix HR root menu access for all HR related apps. 
+- Event : Fix domain on partner.
+- Event: Fix create an event directly by clicking on the calendar.
+- Partner price list : Put field "Label" mandatory.
+- Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
+- Generating a project from a sale order: "project alone" renamed to "business project", generating a project with a "phase by line" or "task by line" generation type now automatically generates the elements.
+- Employee: Fix always dirty form view.
+- Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
+- Timesheet: Hide chart when imputing on manufacturing order.
+- BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
+- Stock Rules: Fix npe on stock rule alert.
+- PRODUCT : Remove field 'ean13' which was unused.
+- Model studio: Fix lost translation on field drag. 
+- Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
+- Error message instead of NPE on operation order plan with a configuration error.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
