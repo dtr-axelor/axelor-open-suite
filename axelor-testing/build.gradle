@@ -24,24 +24,17 @@ project.ext {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     compile "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
     
     testCompile "info.cukes:cucumber-java:${cucumberVersion}"
     testCompile "info.cukes:cucumber-junit:${cucumberVersion}"
     testCompile 'info.cukes:gherkin:2.12.2'
-    testCompile 'ch.qos.logback:logback-classic:1.2.3'
-    testCompile 'com.epam.reportportal:logger-java-logback:4.0.0'
-
     testCompile "junit:junit:${junitVersion}"
-    compile 'com.epam.reportportal:agent-java-cucumber:4.0.2'
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url "http://dl.bintray.com/epam/reportportal" }
-    maven { url 'https://jitpack.io' }
 }
 
 test {

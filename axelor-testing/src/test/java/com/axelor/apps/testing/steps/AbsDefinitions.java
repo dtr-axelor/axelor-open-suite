@@ -1,4 +1,4 @@
-package steps;
+package com.axelor.apps.testing.steps;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -11,28 +11,32 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AbsDefinitions {
 
-  public static final String BASE_URL = "http://web:8080/";
+  // Settings for docker
+  /*
+   * public static final String BASE_URL = "http://web:8080/"; public static final
+   * boolean HEADLESS = true; public static final String PATH_TO_CHROMEDRIVER =
+   * "/chromedriver";
+   */
+
+  // Settings for local test
+  public static final String BASE_URL = "http://localhost:8080/axelor-erp";
+  public static final boolean HEADLESS = false;
+  public static final String PATH_TO_CHROMEDRIVER = "/home/axelor/opt/chromedriver";
+
   static WebDriver driver;
 
   static {
-    String driverType = "Chrome headless"; // Change driver type here
-
-    System.setProperty("webdriver.chrome.driver", "/chromedriver");
-    switch (driverType) {
-      case "Chrome":
-        driver = new ChromeDriver();
-        break;
-      case "Chrome headless":
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
-        driver = new ChromeDriver(chromeOptions);
-        break;
+    System.setProperty("webdriver.chrome.driver", PATH_TO_CHROMEDRIVER);
+    ChromeOptions chromeOptions = new ChromeOptions();
+    if (HEADLESS) {
+      chromeOptions.addArguments("--headless");
     }
+    driver = new ChromeDriver(chromeOptions);
 
     driver.manage().window().maximize();
 
     AbsDefinitions.logIn("admin", "admin");
-    //		AbsDefinitions.setLanguage("Anglais");
+    // AbsDefinitions.setLanguage("Anglais");
   }
 
   public static void logIn(String username, String password) {
@@ -122,7 +126,8 @@ public class AbsDefinitions {
     driverWait.until(
         ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".loading-counter")));
 
-    //		long millisecondsToWait = shouldWait == null ? 100 : (secondsToWait == null ? 1000 :
+    // long millisecondsToWait = shouldWait == null ? 100 : (secondsToWait == null ?
+    // 1000 :
     // secondsToWait * 1000);
     long millisecondsToWait = secondsToWait == null ? 1000 : secondsToWait * 1000;
     Thread.sleep(millisecondsToWait);

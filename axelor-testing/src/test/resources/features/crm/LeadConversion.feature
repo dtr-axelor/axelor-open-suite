@@ -1,4 +1,4 @@
-@Test @LeadConversion
+@LeadConversion
 Feature: Lead conversion
   Test processes related to conversion of a lead into a partner/contact
 

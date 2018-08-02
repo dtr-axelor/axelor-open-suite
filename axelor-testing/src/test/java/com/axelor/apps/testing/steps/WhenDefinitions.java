@@ -1,4 +1,4 @@
-package steps;
+package com.axelor.apps.testing.steps;
 
 import cucumber.api.java.en.When;
 import org.openqa.selenium.By;

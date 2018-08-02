@@ -1,4 +1,4 @@
-@Lead
+@Test @Lead
 Feature: Lead
   Test processes related to lead object
 
@@ -21,7 +21,7 @@ Feature: Lead
     When I type "Smith" in textbox with name "name" and wait
     And I type "whatever@axelor.com" in textbox with name "address" and wait
     And I select "Daniel SILVA" from field with name "user" and wait
-    And I click on button with selector "div.navbar.record-toolbar > div > div > div.btn-group > [title='Save']" and wait for 2 second
+    And I click on button with selector "div.navbar.record-toolbar > div > div > div.btn-group > [title='Save']" and wait for 2 seconds
     Then the status with name "statusSelect" should be "Assigned"
 
   @Passed
@@ -39,7 +39,7 @@ Feature: Lead
   Scenario: Lose a lead
     When I click on button with name "lose" and wait for 2 second
     #This assumes that the lost reason has been added through CRM config menu
-    And I select "Project cancelled" from field with selector "[name='lostReason'] > span > input"
+    And I select "Project cancelled" from field with selector "[name='lostReason'] > span > input" and wait for 1 second
     And I click on button with name "lostReasonConfirm" and wait for 4 seconds
     Then the status with name "statusSelect" should be "Lost"
     And the field with selector "[name='lostReason'] > span > a" should have value "Project cancelled"
