@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.configurator;
+package com.axelor.studio.db.repo;
 
-import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.studio.db.JsonCreator;
+import java.util.List;
 
-public interface ConfiguratorFormulaService {
+public class JsonCreatorRepo extends JsonCreatorRepository {
 
-  /**
-   * Check if the written formula is valid.
-   *
-   * @param formula
-   * @param creator
-   */
-  void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
-      throws AxelorException;
+  @Override
+  public JsonCreator save(JsonCreator jsonCreator) {
+
+    List<MetaJsonField> fields = jsonCreator.getMetaJsonFields();
+    if (fields != null) {
+      for (MetaJsonField field : fields) {
+        field.setModel(jsonCreator.getMetaModel().getFullName());
+        field.setModelField(jsonCreator.getMetaField().getName());
+      }
+    }
+
+    return super.save(jsonCreator);
+  }
 }
