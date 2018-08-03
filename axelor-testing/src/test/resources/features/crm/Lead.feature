@@ -21,7 +21,7 @@ Feature: Lead
     When I type "Smith" in textbox with name "name" and wait
     And I type "whatever@axelor.com" in textbox with name "address" and wait
     And I select "Daniel SILVA" from field with name "user" and wait
-    And I click on button with selector "div.navbar.record-toolbar > div > div > div.btn-group > [title='Save']" and wait for 2 seconds
+    And I click on button with selector "div.navbar.record-toolbar > div > div > div.btn-group > [title='Save']" and wait for 3 seconds
     Then the status with name "statusSelect" should be "Assigned"
 
   @Passed
