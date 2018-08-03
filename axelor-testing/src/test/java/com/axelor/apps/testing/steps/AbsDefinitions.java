@@ -1,15 +1,15 @@
 package com.axelor.apps.testing.steps;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import cucumber.api.java.en.Given;
 
 public class AbsDefinitions {
 
@@ -106,30 +106,33 @@ public class AbsDefinitions {
 		}
 		int index = (ordinal != null) ? ordinal - 1 : 0;
 
+		WebDriverWait driverWait = new WebDriverWait(driver, 30);
+		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("blocker-overlay")));
+		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".loading-counter")));
+
+		WebElement element;
 		switch (locatingMechanism) {
 		case AbsDefinitions.LOCATING_MECANISM_NAME:
 			if (cssSelectorForName == null) {
 				cssSelectorForName = String.format(AbsDefinitions.NAME_CSS_SELECTOR, attributeValue);
 			}
-			return driver.findElements(By.cssSelector(cssSelectorForName)).get(index);
+			element = driver.findElements(By.cssSelector(cssSelectorForName)).get(index);
+			break;
 		case AbsDefinitions.LOCATING_MECANISM_XPATH:
-			return driver.findElements(By.xpath(attributeValue)).get(index);
+			element = driver.findElements(By.xpath(attributeValue)).get(index);
+			break;
 		case AbsDefinitions.LOCATING_MECANISM_SELECTOR:
-			return driver.findElements(By.cssSelector(attributeValue)).get(index);
+			element = driver.findElements(By.cssSelector(attributeValue)).get(index);
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid attribute name: " + locatingMechanism);
 		}
+		new Actions(driver).moveToElement(element).perform();
+		return element;
 	}
 
 	protected void wait(String shouldWait, Integer secondsToWait) throws InterruptedException {
-		WebDriverWait driverWait = new WebDriverWait(AbsDefinitions.driver, 30);
-		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".loading-counter")));
-
-		// long millisecondsToWait = shouldWait == null ? 100 : (secondsToWait == null ?
-		// 1000 :
-		// secondsToWait * 1000);
 		long millisecondsToWait = secondsToWait == null ? 1000 : secondsToWait * 1000;
 		Thread.sleep(millisecondsToWait);
 	}
-
 }

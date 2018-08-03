@@ -59,8 +59,11 @@ public class WhenDefinitions extends AbsDefinitions {
 	@When("^I" + ACTION_CLICK + " tab" + ATTRIBUTE + VALUE + WAIT + "$")
 	public void clickOnTab(String clickType, String attributeName, String attributeValue, String shouldWait,
 			Integer waitingTime) throws InterruptedException {
+		
 		WebElement tab = findElementBy(null, attributeName, attributeValue, null);
 		click(clickType, tab);
+
+		new Actions(driver).moveByOffset(600, 0).build().perform();
 
 		this.wait(shouldWait, waitingTime);
 	}
@@ -77,7 +80,7 @@ public class WhenDefinitions extends AbsDefinitions {
 		new WebDriverWait(driver, 10).until(ExpectedConditions.textToBePresentInElementValue(
 				findElementBy(null, attributeName, attributeValue, cssSelectorForName), fieldValue));
 
-//		this.wait(shouldWait, waitingTime);
+		// this.wait(shouldWait, waitingTime);
 	}
 
 	@When("^I" + ACTION_SELECT + " field" + ATTRIBUTE + VALUE + WAIT + "$")
@@ -100,7 +103,7 @@ public class WhenDefinitions extends AbsDefinitions {
 		WebElement tab = driver.findElement(By.cssSelector("li.active[ng-repeat='tab in navTabs']"));
 		new Actions(driver).contextClick(tab).build().perform();
 
-		//TODO: fix
-		driver.findElement(By.linkText("Refresh")).click();
+		this.wait(null, 1);
+		driver.findElement(By.xpath("//ul[@class='dropdown-menu']/li/a[contains(text(), 'Refresh')]")).click();
 	}
 }

@@ -99,7 +99,7 @@ public class ThenDefinitions extends AbsDefinitions {
 				// with findElementBy method
 				hasQualifier = true;
 				break;
-			case "TODO":
+			case "foo":
 				// TODO: write other cases
 				throw new PendingException();
 			default:
@@ -114,6 +114,11 @@ public class ThenDefinitions extends AbsDefinitions {
 		}
 
 		Assert.assertTrue("Check if a field has the expected property.\nExpected: " + expectedProperty, hasQualifier);
+	}
+
+	@Then("^the report" + ATTRIBUTE + VALUE + " should be visible$")
+	public void checkVisibilityOfReport(String attributeName, String attributeValue) {
+		throw new PendingException();
 	}
 
 	@Then("^the field" + ATTRIBUTE + VALUE + " should have (\\d+) elements$")
