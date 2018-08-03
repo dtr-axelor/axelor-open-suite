@@ -10,123 +10,97 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WhenDefinitions extends AbsDefinitions {
 
-  /*----------- Helper methods ----------- */
+	/*----------- Helper methods ----------- */
 
-  private void click(String clickType, WebElement button) {
-    switch (clickType) {
-      case "click on":
-        button.click();
-        break;
-      case "context-click on":
-        new Actions(driver).contextClick(button).build().perform();
-        break;
-      case "double-click on":
-        new Actions(driver).doubleClick(button).build().perform();
-        break;
-    }
-  }
+	private void click(String clickType, WebElement button) {
+		switch (clickType) {
+		case "click on":
+			button.click();
+			break;
+		case "context-click on":
+			new Actions(driver).contextClick(button).build().perform();
+			break;
+		case "double-click on":
+			new Actions(driver).doubleClick(button).build().perform();
+			break;
+		}
+	}
 
-  /*----------- WHEN methods ----------- */
+	/*----------- WHEN methods ----------- */
 
-  @When("^I" + ACTION_CLICK + " button" + ATTRIBUTE + VALUE + WAIT + "$")
-  public void clickOnButton(
-      String clickType,
-      String attributeName,
-      String attributeValue,
-      String shouldWait,
-      Integer waitingTime)
-      throws InterruptedException {
+	@When("^I" + ACTION_CLICK + " button" + ATTRIBUTE + VALUE + WAIT + "$")
+	public void clickOnButton(String clickType, String attributeName, String attributeValue, String shouldWait,
+			Integer waitingTime) throws InterruptedException {
 
-    // new WebDriverWait(driver, 10).until(ExpectedConditions
-    // .elementToBeClickable(findElementBy(attributeName, attributeValue,
-    // cssSelectorForName)));
+		// new WebDriverWait(driver, 10).until(ExpectedConditions
+		// .elementToBeClickable(findElementBy(attributeName, attributeValue,
+		// cssSelectorForName)));
 
-    WebElement button = findElementBy(null, attributeName, attributeValue, null);
-    click(clickType, button);
-    this.wait(shouldWait, waitingTime);
-  }
+		WebElement button = findElementBy(null, attributeName, attributeValue, null);
+		click(clickType, button);
+		this.wait(shouldWait, waitingTime);
+	}
 
-  @When("^I" + ACTION_CLICK + " menu" + ATTRIBUTE + VALUE + WAIT + "$")
-  public void clickOnMenu(
-      String clickType,
-      String attributeName,
-      String attributeValue,
-      String shouldWait,
-      Integer waitingTime)
-      throws InterruptedException {
-    String cssSelectorForName = ".sidebar li[data-name=" + attributeValue + "] > a";
+	@When("^I" + ACTION_CLICK + " menu" + ATTRIBUTE + VALUE + WAIT + "$")
+	public void clickOnMenu(String clickType, String attributeName, String attributeValue, String shouldWait,
+			Integer waitingTime) throws InterruptedException {
+		String cssSelectorForName = ".sidebar li[data-name=" + attributeValue + "] > a";
 
-    // new WebDriverWait(driver, 10).until(ExpectedConditions
-    // .elementToBeClickable(findElementBy(attributeName, attributeValue,
-    // cssSelectorForName)));
+		// new WebDriverWait(driver, 10).until(ExpectedConditions
+		// .elementToBeClickable(findElementBy(attributeName, attributeValue,
+		// cssSelectorForName)));
 
-    WebElement menu = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
-    click(clickType, menu);
+		WebElement menu = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
+		click(clickType, menu);
 
-    this.wait(shouldWait, waitingTime);
-  }
+		this.wait(shouldWait, waitingTime);
+	}
 
-  @When("^I" + ACTION_CLICK + " tab" + ATTRIBUTE + VALUE + WAIT + "$")
-  public void clickOnTab(
-      String clickType,
-      String attributeName,
-      String attributeValue,
-      String shouldWait,
-      Integer waitingTime)
-      throws InterruptedException {
-    WebElement tab = findElementBy(null, attributeName, attributeValue, null);
-    click(clickType, tab);
+	@When("^I" + ACTION_CLICK + " tab" + ATTRIBUTE + VALUE + WAIT + "$")
+	public void clickOnTab(String clickType, String attributeName, String attributeValue, String shouldWait,
+			Integer waitingTime) throws InterruptedException {
+		WebElement tab = findElementBy(null, attributeName, attributeValue, null);
+		click(clickType, tab);
 
-    this.wait(shouldWait, waitingTime);
-  }
+		this.wait(shouldWait, waitingTime);
+	}
 
-  @When("^I" + ACTION_TYPE + " textbox" + ATTRIBUTE + VALUE + WAIT + "$")
-  public void typeInTextbox(
-      String fieldValue,
-      String attributeName,
-      String attributeValue,
-      String shouldWait,
-      Integer waitingTime) {
+	@When("^I" + ACTION_TYPE + " textbox" + ATTRIBUTE + VALUE + WAIT + "$")
+	public void typeInTextbox(String fieldValue, String attributeName, String attributeValue, String shouldWait,
+			Integer waitingTime) throws InterruptedException {
 
-    String cssSelectorForName = "[name=" + attributeValue + "] > input";
-    WebElement textbox = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
-    textbox.clear();
-    textbox.sendKeys(fieldValue);
+		String cssSelectorForName = "[name=" + attributeValue + "] > input";
+		WebElement textbox = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
+		textbox.clear();
+		textbox.sendKeys(fieldValue);
 
-    WebElement currentTextbox =
-        findElementBy(null, attributeName, attributeValue, cssSelectorForName);
-    new WebDriverWait(driver, 10)
-        .until(ExpectedConditions.textToBePresentInElementValue(currentTextbox, fieldValue));
+		new WebDriverWait(driver, 10).until(ExpectedConditions.textToBePresentInElementValue(
+				findElementBy(null, attributeName, attributeValue, cssSelectorForName), fieldValue));
 
-    // wait(shouldWait, waitingTime);
-    // Assert.assertEquals("WebDriver issue.", fieldValue, textbox.getText());
-  }
+//		this.wait(shouldWait, waitingTime);
+	}
 
-  @When("^I" + ACTION_SELECT + " field" + ATTRIBUTE + VALUE + WAIT + "$")
-  public void selectFrom(
-      String fieldValue,
-      String attributeName,
-      String attributeValue,
-      String shouldWait,
-      Integer waitingTime)
-      throws InterruptedException {
+	@When("^I" + ACTION_SELECT + " field" + ATTRIBUTE + VALUE + WAIT + "$")
+	public void selectFrom(String fieldValue, String attributeName, String attributeValue, String shouldWait,
+			Integer waitingTime) throws InterruptedException {
 
-    String cssSelectorForName = "[name=" + attributeValue + "] > * > input";
-    WebElement element = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
-    element.clear();
-    element.sendKeys(fieldValue);
-    Thread.sleep(300);
-    element.sendKeys(Keys.ARROW_DOWN);
-    element.sendKeys(Keys.ENTER);
+		String cssSelectorForName = "[name=" + attributeValue + "] > * > input";
+		WebElement element = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
+		element.clear();
+		element.sendKeys(fieldValue);
+		Thread.sleep(300);
+		element.sendKeys(Keys.ARROW_DOWN);
+		element.sendKeys(Keys.ENTER);
 
-    this.wait(shouldWait, waitingTime);
-  }
+		this.wait(shouldWait, waitingTime);
+	}
 
-  @When("^I refresh this tab" + WAIT + "$")
-  public void refreshTab(String shouldWait, Integer waitingTime) throws InterruptedException {
-    WebElement tab = driver.findElement(By.cssSelector("li.active[ng-repeat='tab in navTabs']"));
-    new Actions(driver).contextClick(tab).build().perform();
+	@When("^I refresh this tab" + WAIT + "$")
+	public void refreshTab(String shouldWait, Integer waitingTime) throws InterruptedException {
+		WebElement tab = driver.findElement(By.cssSelector("li.active[ng-repeat='tab in navTabs']"));
+		new Actions(driver).contextClick(tab).build().perform();
 
-    driver.findElement(By.linkText("Refresh")).click();
-  }
+		//TODO: fix
+		driver.findElement(By.linkText("Refresh")).click();
+	}
 }
