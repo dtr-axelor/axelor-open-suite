@@ -32,9 +32,8 @@ public class WhenDefinitions extends AbsDefinitions {
 	public void clickOnButton(String clickType, String attributeName, String attributeValue, String shouldWait,
 			Integer waitingTime) throws InterruptedException {
 
-		// new WebDriverWait(driver, 10).until(ExpectedConditions
-		// .elementToBeClickable(findElementBy(attributeName, attributeValue,
-		// cssSelectorForName)));
+		new WebDriverWait(driver, 10).until(
+				ExpectedConditions.elementToBeClickable(findElementBy(null, attributeName, attributeValue, null)));
 
 		WebElement button = findElementBy(null, attributeName, attributeValue, null);
 		click(clickType, button);
@@ -46,9 +45,8 @@ public class WhenDefinitions extends AbsDefinitions {
 			Integer waitingTime) throws InterruptedException {
 		String cssSelectorForName = ".sidebar li[data-name=" + attributeValue + "] > a";
 
-		// new WebDriverWait(driver, 10).until(ExpectedConditions
-		// .elementToBeClickable(findElementBy(attributeName, attributeValue,
-		// cssSelectorForName)));
+		new WebDriverWait(driver, 10).until(ExpectedConditions
+				.elementToBeClickable(findElementBy(null, attributeName, attributeValue, cssSelectorForName)));
 
 		WebElement menu = findElementBy(null, attributeName, attributeValue, cssSelectorForName);
 		click(clickType, menu);
@@ -59,7 +57,7 @@ public class WhenDefinitions extends AbsDefinitions {
 	@When("^I" + ACTION_CLICK + " tab" + ATTRIBUTE + VALUE + WAIT + "$")
 	public void clickOnTab(String clickType, String attributeName, String attributeValue, String shouldWait,
 			Integer waitingTime) throws InterruptedException {
-		
+
 		WebElement tab = findElementBy(null, attributeName, attributeValue, null);
 		click(clickType, tab);
 

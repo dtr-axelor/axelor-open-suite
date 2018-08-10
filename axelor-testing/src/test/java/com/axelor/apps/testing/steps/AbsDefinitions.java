@@ -1,7 +1,6 @@
 package com.axelor.apps.testing.steps;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -109,6 +108,8 @@ public class AbsDefinitions {
 		WebDriverWait driverWait = new WebDriverWait(driver, 30);
 		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("blocker-overlay")));
 		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".loading-counter")));
+		// TODO: check what is the class used
+		driverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".ui-corner-all")));
 
 		WebElement element;
 		switch (locatingMechanism) {
