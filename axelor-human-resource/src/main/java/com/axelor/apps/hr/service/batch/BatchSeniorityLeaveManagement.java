@@ -32,6 +32,12 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import static com.axelor.apps.hr.exception.IException.LEAVE_MANAGEMENT;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Locale;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.HrBatch;
@@ -47,29 +53,17 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchSeniorityLeaveManagement extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   int total;
   int noValueAnomaly;
@@ -94,7 +88,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException, AxelorException {
 
     super.start();
 
@@ -105,7 +99,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
-          IException.LEAVE_MANAGEMENT,
+          LEAVE_MANAGEMENT,
           batch.getId());
     total = 0;
     noValueAnomaly = 0;
@@ -127,18 +121,12 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   }
 
   public List<Employee> getEmployees(HrBatch hrBatch) {
-
-    List<Employee> employeeList = Lists.newArrayList();
-    if (hrBatch.getCompany() != null) {
-      employeeList =
-          JPA.all(Employee.class)
-              .filter("self.mainEmploymentContract.payCompany = :company")
-              .bind("company", hrBatch.getCompany())
-              .fetch();
-    } else {
-      employeeList = JPA.all(Employee.class).fetch();
-    }
-    return employeeList;
+    return hrBatch.getCompany() != null
+        ? JPA.all(Employee.class)
+            .filter("self.mainEmploymentContract.payCompany = :company")
+            .bind("company", hrBatch.getCompany())
+            .fetch()
+        : JPA.all(Employee.class).fetch();
   }
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
@@ -147,7 +135,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
           noValueAnomaly++;
@@ -207,7 +195,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               .getLeaveManagementBatchRuleList()) {
 
         if (rule.getExecutiveStatusSelect()
-            == employee.getMainEmploymentContract().getExecutiveStatusSelect()) {
+            .equals(employee.getMainEmploymentContract().getExecutiveStatusSelect())) {
           maker.setContext(employee, "Employee");
           String formula = rule.getFormula();
           formula =

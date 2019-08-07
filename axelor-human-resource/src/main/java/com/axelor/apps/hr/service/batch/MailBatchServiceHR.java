@@ -29,25 +29,22 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class MailBatchServiceHR extends MailBatchService {
+
   @Override
   public Batch run(Model batchModel) throws AxelorException {
-    Batch batch = super.run(batchModel);
+    super.run(batchModel);
     MailBatch mailBatch = (MailBatch) batchModel;
 
-    switch (mailBatch.getActionSelect()) {
-      case MailBatchRepository.ACTION_REMIN_TIMESHEET:
-        batch = reminderTimesheet(mailBatch);
-        break;
+    if (mailBatch.getActionSelect() == MailBatchRepository.ACTION_REMIN_TIMESHEET) {
+      return reminderTimesheet(mailBatch);
 
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
-            mailBatch.getActionSelect(),
-            mailBatch.getCode());
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BASE_BATCH_1),
+          mailBatch.getActionSelect(),
+          mailBatch.getCode());
     }
-
-    return batch;
   }
 
   public Batch reminderTimesheet(MailBatch mailBatch) {

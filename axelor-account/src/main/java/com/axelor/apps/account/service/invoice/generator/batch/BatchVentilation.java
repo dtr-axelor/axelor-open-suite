@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
+import static com.axelor.apps.account.exception.IException.INVOICE_ORIGIN;
+import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchVentilation extends BatchWkf {
 
@@ -55,7 +55,7 @@ public class BatchVentilation extends BatchWkf {
         TraceBackService.trace(
             new AxelorException(
                 e, e.getCategory(), I18n.get("Invoice") + " %s", invoice.getInvoiceId()),
-            IException.INVOICE_ORIGIN,
+            INVOICE_ORIGIN,
             batch.getId());
         incrementAnomaly();
 
@@ -63,7 +63,7 @@ public class BatchVentilation extends BatchWkf {
 
         TraceBackService.trace(
             new Exception(String.format(I18n.get("Invoice") + " %s", invoice.getInvoiceId()), e),
-            IException.INVOICE_ORIGIN,
+            INVOICE_ORIGIN,
             batch.getId());
         incrementAnomaly();
 

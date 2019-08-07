@@ -25,10 +25,6 @@ package com.axelor.exception.db;
 @Deprecated
 public interface IException {
 
-  /** Origin select */
-  public static final String INVOICE_ORIGIN = "invoice";
-
-  public static final String REMINDER = "reminder";
   public static final String DEBT_RECOVERY = "debtRecovery";
   public static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
   public static final String REIMBURSEMENT = "reimbursement";
@@ -39,7 +35,6 @@ public interface IException {
   public static final String IRRECOVERABLE = "irrecoverable";
   public static final String CRM = "crm";
   public static final String IMPORT = "import";
-  public static final String LEAVE_MANAGEMENT = "leaveManagement";
   public static final String BANK_STATEMENT = "bankStatement";
   public static final String CREDIT_TRANSFER = "creditTransfer";
   public static final String REPORTED_BALANCE = "reportedBalance";

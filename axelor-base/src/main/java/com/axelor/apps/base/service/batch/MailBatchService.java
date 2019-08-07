@@ -43,16 +43,14 @@ public class MailBatchService extends AbstractBatchService {
     Batch batch;
     MailBatch mailBatch = (MailBatch) batchModel;
 
-    switch (mailBatch.getActionSelect()) {
-      case MailBatchRepository.ACTION_REMIN_TIMESHEET:
-        batch = null;
-        break;
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
-            mailBatch.getActionSelect(),
-            mailBatch.getCode());
+    if (mailBatch.getActionSelect() == MailBatchRepository.ACTION_REMIN_TIMESHEET) {
+      batch = null;
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BASE_BATCH_1),
+          mailBatch.getActionSelect(),
+          mailBatch.getCode());
     }
 
     return batch;

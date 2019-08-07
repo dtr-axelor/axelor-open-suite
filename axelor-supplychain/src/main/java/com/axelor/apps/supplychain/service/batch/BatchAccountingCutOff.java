@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import static com.axelor.apps.account.exception.IException.INVOICE_ORIGIN;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
@@ -26,15 +32,9 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchAccountingCutOff extends BatchStrategy {
 
@@ -109,7 +109,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
           TraceBackService.trace(
               new AxelorException(
                   e, e.getCategory(), I18n.get("StockMove") + " %s", stockMove.getStockMoveSeq()),
-              IException.INVOICE_ORIGIN,
+              INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
           break;
@@ -117,7 +117,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
           TraceBackService.trace(
               new Exception(
                   String.format(I18n.get("StockMove") + " %s", stockMove.getStockMoveSeq()), e),
-              IException.INVOICE_ORIGIN,
+              INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
           LOG.error("Anomaly generated for the stock move {}", stockMove.getStockMoveSeq());

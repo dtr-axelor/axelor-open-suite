@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import static com.axelor.apps.account.exception.IException.INVOICE_ORIGIN;
+import java.util.List;
+import javax.persistence.TypedQuery;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -28,14 +31,11 @@ import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import java.util.List;
-import javax.persistence.TypedQuery;
 
 public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 
@@ -86,7 +86,7 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
           incrementAnomaly();
           anomalyList.add(stockMove.getId());
           query.setParameter("anomalyList", anomalyList);
-          TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+          TraceBackService.trace(e, INVOICE_ORIGIN, batch.getId());
           e.printStackTrace();
           break;
         }

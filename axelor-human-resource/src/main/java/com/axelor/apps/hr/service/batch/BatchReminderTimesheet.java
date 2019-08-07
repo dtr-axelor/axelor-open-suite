@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import java.util.HashSet;
+import java.util.List;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
@@ -25,7 +27,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
@@ -33,13 +34,10 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.util.HashSet;
-import java.util.List;
 
 public class BatchReminderTimesheet extends AbstractBatch {
 
@@ -56,15 +54,19 @@ public class BatchReminderTimesheet extends AbstractBatch {
 
   @Override
   protected void process() {
-    if (batch.getMailBatch().getCode().equals(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET)) {
-      if (batch.getMailBatch().getTemplate() != null) this.generateEmailTemplate();
-      else this.generateEmail();
-    } else if (batch
-        .getMailBatch()
-        .getCode()
-        .equals(MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET)) {
-      if (batch.getMailBatch().getTemplate() != null) this.generateAllEmailTemplate();
-      else this.generateAllEmail();
+    String code = batch.getMailBatch().getCode();
+    if (code.equals(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET)) {
+      if (batch.getMailBatch().getTemplate() != null) {
+        generateEmailTemplate();
+      } else {
+        generateEmail();
+      }
+    } else if (code.equals(MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET)) {
+      if (batch.getMailBatch().getTemplate() != null) {
+        generateAllEmailTemplate();
+      } else {
+        generateAllEmail();
+      }
     }
   }
 
@@ -73,7 +75,7 @@ public class BatchReminderTimesheet extends AbstractBatch {
     Company company = batch.getMailBatch().getCompany();
     Template template = batch.getMailBatch().getTemplate();
     List<Timesheet> timesheetList = null;
-    if (Beans.get(CompanyRepository.class).all().fetch().size() > 1) {
+    if (Beans.get(CompanyRepository.class).all().count() > 1) {
       timesheetList =
           Beans.get(TimesheetRepository.class)
               .all()
@@ -96,11 +98,12 @@ public class BatchReminderTimesheet extends AbstractBatch {
         message =
             templateMessageService.generateMessage(
                 timesheet.getUser().getEmployee().getId(), model, tag, template);
-        message = messageService.sendByEmail(message);
+        messageService.sendByEmail(message);
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.REMINDER, batch.getId());
+        TraceBackService.trace(
+            new Exception(e), com.axelor.apps.hr.exception.IException.REMINDER, batch.getId());
       }
     }
   }
@@ -108,7 +111,7 @@ public class BatchReminderTimesheet extends AbstractBatch {
   public void generateEmail() {
     Company company = batch.getMailBatch().getCompany();
     List<Timesheet> timesheetList = null;
-    if (Beans.get(CompanyRepository.class).all().fetch().size() > 1) {
+    if (Beans.get(CompanyRepository.class).all().count() > 1) {
       timesheetList =
           Beans.get(TimesheetRepository.class)
               .all()
@@ -127,9 +130,9 @@ public class BatchReminderTimesheet extends AbstractBatch {
       Message message = new Message();
       try {
         message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
-        message.setReplyToEmailAddressSet(new HashSet<EmailAddress>());
-        message.setCcEmailAddressSet(new HashSet<EmailAddress>());
-        message.setBccEmailAddressSet(new HashSet<EmailAddress>());
+        message.setReplyToEmailAddressSet(new HashSet<>());
+        message.setCcEmailAddressSet(new HashSet<>());
+        message.setBccEmailAddressSet(new HashSet<>());
         message.addToEmailAddressSetItem(
             timesheet.getUser().getEmployee().getContactPartner().getEmailAddress());
         message.setSenderUser(AuthUtils.getUser());
@@ -141,12 +144,15 @@ public class BatchReminderTimesheet extends AbstractBatch {
                 .filter("self.isDefault = true")
                 .fetchOne());
 
-        message = messageService.sendByEmail(message);
+        messageService.sendByEmail(message);
 
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(
+            new Exception(e),
+            com.axelor.apps.account.exception.IException.INVOICE_ORIGIN,
+            batch.getId());
       }
     }
   }
@@ -154,46 +160,34 @@ public class BatchReminderTimesheet extends AbstractBatch {
   public void generateAllEmailTemplate() {
 
     Template template = batch.getMailBatch().getTemplate();
-    List<Employee> employeeList = null;
-    if (Beans.get(CompanyRepository.class).all().fetch().size() > 1) {
-      employeeList =
-          Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-    } else {
-      employeeList =
-          Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-    }
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch()) {
+
       try {
         Message message =
             templateMessageService.generateMessage(employee.getId(), model, tag, template);
-        message = messageService.sendByEmail(message);
+        messageService.sendByEmail(message);
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.REMINDER, batch.getId());
+        TraceBackService.trace(
+            new Exception(e), com.axelor.apps.hr.exception.IException.REMINDER, batch.getId());
       }
     }
   }
 
   public void generateAllEmail() {
-    Company company = batch.getMailBatch().getCompany();
-    List<Employee> employeeList = null;
-    if (Beans.get(CompanyRepository.class).all().fetch().size() > 1) {
-      employeeList =
-          Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-    } else {
-      employeeList =
-          Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-    }
-    for (Employee employee : employeeList) {
-      Message message = new Message();
+    for (Employee employee :
+        Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch()) {
+
       try {
+        Message message = new Message();
         message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
-        message.setReplyToEmailAddressSet(new HashSet<EmailAddress>());
-        message.setCcEmailAddressSet(new HashSet<EmailAddress>());
-        message.setBccEmailAddressSet(new HashSet<EmailAddress>());
+        message.setReplyToEmailAddressSet(new HashSet<>());
+        message.setCcEmailAddressSet(new HashSet<>());
+        message.setBccEmailAddressSet(new HashSet<>());
         message.addToEmailAddressSetItem(employee.getContactPartner().getEmailAddress());
         message.setSenderUser(AuthUtils.getUser());
         message.setSubject(batch.getMailBatch().getSubject());
@@ -204,12 +198,15 @@ public class BatchReminderTimesheet extends AbstractBatch {
                 .filter("self.isDefault = true")
                 .fetchOne());
 
-        message = messageService.sendByEmail(message);
+        messageService.sendByEmail(message);
 
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(
+            new Exception(e),
+            com.axelor.apps.account.exception.IException.INVOICE_ORIGIN,
+            batch.getId());
       }
     }
   }
@@ -217,7 +214,7 @@ public class BatchReminderTimesheet extends AbstractBatch {
   @Override
   protected void stop() {
 
-    String comment = String.format("\t* %s Email(s) sent \n", batch.getDone());
+    String comment = String.format("\t* %s Email(s) sent %n", batch.getDone());
     comment +=
         String.format(
             "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),

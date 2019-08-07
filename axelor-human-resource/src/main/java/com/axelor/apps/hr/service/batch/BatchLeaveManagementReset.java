@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import static com.axelor.apps.hr.exception.IException.LEAVE_MANAGEMENT;
+import java.util.List;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -26,12 +28,10 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
 public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
@@ -54,7 +54,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       try {
         resetLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
           noValueAnomaly++;

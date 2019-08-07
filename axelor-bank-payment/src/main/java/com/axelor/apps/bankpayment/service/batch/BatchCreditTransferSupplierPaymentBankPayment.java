@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import static com.axelor.apps.account.exception.IException.INVOICE_ORIGIN;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -24,13 +29,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchCreditTransferSupplierPaymentBankPayment
     extends BatchCreditTransferSupplierPayment {
@@ -57,7 +57,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
       try {
         bankOrderMergeService.mergeFromInvoicePayments(doneList);
       } catch (Exception e) {
-        TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(e, INVOICE_ORIGIN, batch.getId());
         LOG.error(e.getMessage());
       }
     }
