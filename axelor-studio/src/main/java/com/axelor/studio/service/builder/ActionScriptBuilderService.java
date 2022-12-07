@@ -17,14 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_ONE;
-
+import com.axelor.apps.tool.MetaJsonFieldTypeEnum;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -41,10 +34,12 @@ import com.axelor.studio.service.filter.FilterSqlService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,7 +288,7 @@ public class ActionScriptBuilderService {
             ? line.getMetaJsonField().getType()
             : inflector.dasherize(line.getMetaField().getRelationship());
 
-    switch (type) {
+    switch (MetaJsonFieldTypeEnum.valueOfByValue(type)) {
       case MANY_TO_ONE:
         subCode = addM2OBinding(line, true, true);
         break;
