@@ -36,4 +36,9 @@
     <option value="3">Hybrid</option>
   </selection>
 
+  <selection name="fleet.batch.action.select">
+    <option value="1">Fill vehicles</option>
+  </selection>
+
+
 </object-views>

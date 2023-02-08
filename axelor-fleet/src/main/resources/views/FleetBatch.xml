@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <grid name="fleet-batch-grid" title="Fleet batches"
+    model="com.axelor.apps.fleet.db.FleetBatch">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="actionSelect"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="fleet-batch-form" title="Fleet Batch" model="com.axelor.apps.fleet.db.FleetBatch"
+    width="large">
+    <panel name="mainPanel">
+      <field name="actionSelect"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        onChange="action-base-batch-condition-check-unique-code"/>
+      <field name="company" canEdit="false"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+    	<button onClick="save,fleet-action-method-fill-vehicle" name="fillVehicle" title="Lancer le batch"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="configPanel" title="Configuration">
+        <field name="fillDate"/>
+        <field name="liter"/>
+        <field name="pricePerLiter"/>
+        <field name="vendorPartner"/>
+      </panel>
+
+      <panel name="informationsPanel" title="Information">
+        <field name="createdOn" title="Created on"/>
+        <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"
+          canEdit="false"/>
+        <field name="description" colSpan="12"/>
+        <panel-related name="batchListPanel" field="batchList" colSpan="12"
+          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      </panel>
+    </panel-tabs>
+  </form>
+  
+  
+  <action-method name="fleet-action-method-fill-vehicle">
+  	<call class="com.axelor.apps.fleet.web.FleetBatchController" method="fillVehicle"/>
+  </action-method>
+
+</object-views>

@@ -16,6 +16,15 @@
     <view type="form" name="vehicle-form"/>
   </action-view>
 
+  <menuitem name="admin-root-batch-fleet" title="Fleet batch" action="action.admin.root.fleet.batch"
+    parent="admin-root-batch" order="2"/>
+
+  <action-view name="action.admin.root.fleet.batch" title="Fleet batchs"
+    model="com.axelor.apps.fleet.db.FleetBatch">
+    <view type="grid" name="fleet-batch-grid"/>
+    <view type="form" name="fleet-batch-form"/>
+  </action-view>
+
   <menuitem name="fleet-root-vehicle-models" title="Vehicle models"
     action="fleet.root.vehicle.models" parent="fleet-root" order="2"/>
 

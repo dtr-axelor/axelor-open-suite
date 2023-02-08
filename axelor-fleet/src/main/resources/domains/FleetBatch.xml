@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="fleet" package="com.axelor.apps.fleet.db"/>
+
+  <entity name="FleetBatch" lang="java" cacheable="true">
+
+    <!-- HEADER -->
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="fleet.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+    <!-- OTHERS INFORMATION -->
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="fleetBatch" title="Batchs"/>
+
+    <date name="fillDate" title="Fill date"/>
+    <decimal name="liter" title="Liter"/>
+    <decimal name="pricePerLiter" title="Price per liter"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="vendorPartner"/>
+
+
+    <extra-code><![CDATA[
+
+	   	// ACTION TYPE
+		public static final int ACTION_FILL_VEHICLE = 1;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>
